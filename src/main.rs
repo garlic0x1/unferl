@@ -113,7 +113,7 @@ fn writer(rx: mpsc::Receiver<ParsedUrl>, args: &Arguments) {
         match &args.command {
             Commands::Keys => {
                 for key in parsed.keys.iter() {
-                    if !filter.contains(key) {
+                    if !filter.contains(key) || !args.unique {
                         println!("{}", key);
                         filter.insert(key.to_string());
                     }
@@ -121,27 +121,31 @@ fn writer(rx: mpsc::Receiver<ParsedUrl>, args: &Arguments) {
             }
             Commands::Values => {
                 for value in parsed.values.iter() {
-                    if !filter.contains(value) {
+                    if !filter.contains(value) || !args.unique {
                         println!("{}", value);
                         filter.insert(value.to_string());
                     }
                 }
             }
             Commands::Domains => {
-                if !filter.contains(&parsed.domain) {
+                if !filter.contains(&parsed.domain) || !args.unique {
                     println!("{}", parsed.domain);
                     filter.insert(parsed.domain);
                 }
             }
             Commands::Paths => {
-                if !filter.contains(&parsed.path) {
+                if !filter.contains(&parsed.path) || !args.unique {
                     println!("{}", parsed.path);
                     filter.insert(parsed.path);
                 }
             }
             Commands::Format { value } => {
                 if let Some(string) = value {
-                    println!("{}", parsed.format(&string));
+                    let formatted = parsed.format(&string);
+                    if !filter.contains(&parsed.path) || !args.unique {
+                        println!("{}", formatted);
+                        filter.insert(formatted);
+                    }
                 }
             }
         }
