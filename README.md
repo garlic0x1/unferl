@@ -1,4 +1,7 @@
-# unferl
+# unferl  
+A clone of https://github.com/tomnomnom/unfurl in Rust.  
+Format string functionality works the same, but without all fields implemented yet.  
+  
 ```
 $ unferl -h
 unferl 0.1.0
@@ -18,4 +21,5 @@ SUBCOMMANDS:
     keys       
     paths      
     values  
-    ```
+``` 
+
