@@ -73,6 +73,7 @@ impl ParsedUrl {
                 'p' => {
                     if fmt {
                         result.push_str(&self.path);
+                        fmt = false;
                     } else {
                         result.push(c);
                     }
@@ -80,6 +81,7 @@ impl ParsedUrl {
                 's' => {
                     if fmt {
                         result.push_str(&self.scheme);
+                        fmt = false;
                     } else {
                         result.push(c);
                     }
@@ -87,11 +89,18 @@ impl ParsedUrl {
                 'd' => {
                     if fmt {
                         result.push_str(&self.domain);
+                        fmt = false;
                     } else {
                         result.push(c);
                     }
                 },
-                _ => result.push(c),
+                _ => {
+                    if fmt {
+                        fmt = false;
+                    } else {
+                        result.push(c);
+                    }
+                },
             }
         }
         result
