@@ -19,6 +19,7 @@ struct Arguments {
 enum Commands {
     Keys,
     Values,
+    Keypairs,
     Domains,
     Paths,
     Format {
@@ -124,6 +125,17 @@ fn writer(rx: mpsc::Receiver<ParsedUrl>, args: &Arguments) {
                     if !filter.contains(value) || !args.unique {
                         println!("{}", value);
                         filter.insert(value.to_string());
+                    }
+                }
+            }
+            Commands::Keypairs => {
+                for (i, value) in parsed.values.iter().enumerate() {
+                    if let Some(key) = parsed.keys.get(i) {
+                        let pair = format!("{}={}", key, value);
+                    if !filter.contains(&pair) || !args.unique {
+                        println!("{}", pair);
+                        filter.insert(pair);
+                    }
                     }
                 }
             }
