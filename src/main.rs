@@ -31,13 +31,17 @@ enum Commands {
     Domains,
     /// print paths{n}
     Paths,
+    /// print fragments{n}
+    Fragments,
     /// printf style formatting (`unferl help format`){n}
     Format {
         /// printf style formatting{n}
         /// %% -> literal "%"{n}
         /// %s -> scheme{n}
+        /// %q -> query string{n}
         /// %d -> domain{n}
         /// %p -> path{n}
+        /// %P -> port{n}
         #[clap(value_parser)]
         value: Option<String>,
     },
@@ -49,6 +53,9 @@ struct ParsedUrl {
     path: String,
     keys: Vec<String>,
     values: Vec<String>,
+    query: String,
+    fragment: String,
+    port: Option<u16>,
 }
 
 impl ParsedUrl {
@@ -65,8 +72,11 @@ impl ParsedUrl {
                     scheme: u.scheme().to_string(),
                     domain: u.host().unwrap().to_string(),
                     path: u.path().to_string(),
+                    port: u.port(),
+                    fragment: u.fragment().unwrap_or_default().to_string(),
                     keys,
                     values,
+                    query: u.query().unwrap_or_default().to_string(),
                 };
 
                 Ok(parsed)
@@ -86,9 +96,27 @@ impl ParsedUrl {
                     }
                     fmt = !fmt;
                 }
+                'q' => {
+                    if fmt {
+                        result.push_str(&self.query);
+                        fmt = false;
+                    } else {
+                        result.push(c);
+                    }
+                }
                 'p' => {
                     if fmt {
                         result.push_str(&self.path);
+                        fmt = false;
+                    } else {
+                        result.push(c);
+                    }
+                }
+                'P' => {
+                    if fmt {
+                        if let Some(p) = &self.port {
+                            result.push_str(p.to_string().as_str());
+                        }
                         fmt = false;
                     } else {
                         result.push(c);
@@ -158,6 +186,12 @@ fn writer(rx: mpsc::Receiver<ParsedUrl>, args: &Arguments) {
                 if !filter.contains(&parsed.domain) || !args.unique {
                     println!("{}", parsed.domain);
                     filter.insert(parsed.domain);
+                }
+            }
+            Commands::Fragments => {
+                if !filter.contains(&parsed.path) || !args.unique {
+                    println!("{}", parsed.fragment);
+                    filter.insert(parsed.path);
                 }
             }
             Commands::Paths => {
