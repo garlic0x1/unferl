@@ -19,12 +19,22 @@ struct Arguments {
 
 #[derive(Subcommand)]
 enum Commands {
+    /// print query keys{n}
     Keys,
+    /// print query values{n}
     Values,
+    /// print keypairs ("key=value"){n}
     Keypairs,
+    /// print domains{n}
     Domains,
+    /// print paths{n}
     Paths,
+    /// printf style formatting{n}
     Format {
+        /// printf style formatting{n}
+        /// %s -> scheme{n}
+        /// %d -> domain{n}
+        /// %p -> path{n}
         #[clap(value_parser)]
         value: Option<String>,
     },
