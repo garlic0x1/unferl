@@ -147,8 +147,10 @@ impl ParsedUrl {
                     }
                     'a' => {
                         if let Some(u) = &self.user_info() {
-                            result.push_str(u);
-                            result.push('@');
+                            if u.len() > 0 {
+                                result.push_str(u);
+                                result.push('@');
+                            }
                             result.push_str(&self.domain);
                             if let Some(p) = &self.port {
                                 result.push(':');
@@ -159,7 +161,7 @@ impl ParsedUrl {
                     '@' => {
                         if let Some(s) = &self.user_info() {
                             if s.len() > 0 {
-                            result.push('@');
+                                result.push('@');
                             }
                         }
                     }

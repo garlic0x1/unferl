@@ -1,10 +1,9 @@
-use unferl::ParsedUrl;
 use clap::{Parser, Subcommand};
 use std::collections::HashSet;
 use std::sync::mpsc;
 use std::thread;
 use std::{io, io::prelude::*};
-
+use unferl::ParsedUrl;
 
 #[derive(Parser)]
 #[clap(author, version, about, long_about = None)]
