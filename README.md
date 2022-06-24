@@ -1,5 +1,5 @@
 # unferl  
-A fully backwards compatible clone of https://github.com/tomnomnom/unfurl in Rust.  
+A mostly backwards compatible clone of https://github.com/tomnomnom/unfurl in Rust.  
   
 ```
 $ unferl -h
