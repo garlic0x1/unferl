@@ -11,13 +11,13 @@ USAGE:
 
 OPTIONS:
     -h, --help       Print help information
-    -u, --unique     
-    -v, --verbose    
+    -u, --unique     only print unique results
+    -v, --verbose    print errors to stderr
     -V, --version    Print version information
 
 SUBCOMMANDS:
     domains     print domains
-    format      printf style formatting
+    format      printf style formatting (`unferl help format` for more details)
     help        Print this message or the help of the given subcommand(s)
     keypairs    print keypairs ("key=value")
     keys        print query keys
