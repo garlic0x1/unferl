@@ -11,8 +11,10 @@ use url::Url;
 struct Arguments {
     #[clap(subcommand)]
     command: Commands,
+    /// only print unique results
     #[clap(short, long)]
     unique: bool,
+    /// print errors to stderr
     #[clap(short, long)]
     verbose: bool,
 }
@@ -29,9 +31,10 @@ enum Commands {
     Domains,
     /// print paths{n}
     Paths,
-    /// printf style formatting{n}
+    /// printf style formatting (`unferl help format`){n}
     Format {
         /// printf style formatting{n}
+        /// %% -> literal "%"{n}
         /// %s -> scheme{n}
         /// %d -> domain{n}
         /// %p -> path{n}
