@@ -13,6 +13,8 @@ struct Arguments {
     command: Commands,
     #[clap(short, long)]
     unique: bool,
+    #[clap(short, long)]
+    verbose: bool,
 }
 
 #[derive(Subcommand)]
@@ -70,7 +72,7 @@ impl ParsedUrl {
                         result.push(c);
                     }
                     fmt = !fmt;
-                },
+                }
                 'p' => {
                     if fmt {
                         result.push_str(&self.path);
@@ -78,7 +80,7 @@ impl ParsedUrl {
                     } else {
                         result.push(c);
                     }
-                },
+                }
                 's' => {
                     if fmt {
                         result.push_str(&self.scheme);
@@ -86,7 +88,7 @@ impl ParsedUrl {
                     } else {
                         result.push(c);
                     }
-                },
+                }
                 'd' => {
                     if fmt {
                         result.push_str(&self.domain);
@@ -94,14 +96,14 @@ impl ParsedUrl {
                     } else {
                         result.push(c);
                     }
-                },
+                }
                 _ => {
                     if fmt {
                         fmt = false;
                     } else {
                         result.push(c);
                     }
-                },
+                }
             }
         }
         result
@@ -132,10 +134,10 @@ fn writer(rx: mpsc::Receiver<ParsedUrl>, args: &Arguments) {
                 for (i, value) in parsed.values.iter().enumerate() {
                     if let Some(key) = parsed.keys.get(i) {
                         let pair = format!("{}={}", key, value);
-                    if !filter.contains(&pair) || !args.unique {
-                        println!("{}", pair);
-                        filter.insert(pair);
-                    }
+                        if !filter.contains(&pair) || !args.unique {
+                            println!("{}", pair);
+                            filter.insert(pair);
+                        }
                     }
                 }
             }
@@ -173,9 +175,10 @@ fn main() {
             if let Ok(l) = line {
                 let parsed = ParsedUrl::new(l);
                 if let Ok(p) = parsed {
-                    match tx.send(p) {
-                        Ok(..) => (),
-                        Err(..) => (),
+                    if let Err(e) = tx.send(p) {
+                        if args.verbose {
+                            eprintln!("Error parsing URL: {}", e);
+                        }
                     }
                 };
             }
